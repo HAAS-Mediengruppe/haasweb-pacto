@@ -36,12 +36,17 @@ export class InitializeLazy {
 	}
 
 	get condition() {
-		if (document.readyState === 'complete') {
+		if (document.readyState === 'complete' || document.readyState === 'interactive') {
 			return Promise.resolve();
 		}
-
-		return new Promise((resolve) =>
-			window.addEventListener('DOMContentLoaded', resolve, {once: true}));
+    
+	    return new Promise((resolve) =>
+	      document.addEventListener("readystatechange", (event) => {
+	        if(document.readyState === 'complete' || document.readyState === 'interactive') {
+	          resolve();
+	        }
+	      })
+	    );
 	}
 
 	get observerSettings() {
